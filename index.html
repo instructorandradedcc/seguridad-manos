@@ -36,46 +36,48 @@
 
         /* --- ESTILOS DEL JUEGO --- */
         #game-area {
-            /* Necesario para que el canvas y los hotspots se superpongan correctamente */
             position: relative; 
-            cursor: none; /* Ocultamos el cursor normal, la lupa será nuestro cursor */
+            cursor: none; 
         }
         
         #game-canvas {
-            /* El lienzo para la LUPA y el DIBUJO. Se sitúa SOBRE la imagen y los hotspots */
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 10; 
             z-index: 10; /* Por encima de todo en el área de juego */
         }
 
         .hotspot {
-            /* Los hotspots están DETRÁS del canvas. Son invisibles hasta que se 'encuentran' */
+            /* ----- ¡MODO JUEGO! ----- */
+            /* ¡Cambio Realizado! Los hotspots ahora son 100% invisibles. */
+            opacity: 0; 
+            background-color: transparent;
+            border: 2px dashed transparent; /* Se mantiene la base para la transición */
+            /* ----- FIN MODO JUEGO ----- */
+            
             position: absolute;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            z-index: 5; /* Detrás del canvas, pero sobre la imagen */
-            opacity: 0; /* Invisibles por defecto */
-            pointer-events: none; /* No pueden ser clickeados directamente */
+            z-index: 5; 
+            pointer-events: none; /* El clic va al canvas */
             transition: all 0.3s ease;
         }
         
         .hotspot.found {
-            /* Cuando se encuentran, se hacen visibles (detrás de la lupa/dibujo) */
-            opacity: 1;
+            opacity: 1; /* Se hace 100% visible al encontrarlo */
             border: 4px solid #10B981; /* green-500 */
             background-color: rgba(16, 185, 129, 0.4);
         }
         
         #floating-menu {
-            /* Menú de herramientas sobre el canvas */
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 20; /* Encima de todo */
+            z-index: 20; 
             background: white;
             border-radius: 8px;
             padding: 4px;
@@ -246,7 +248,8 @@
             <!-- PESTAÑA 5: MINIJUEGO "ENCUENTRA EL RIESGO" -->
             <div id="tab-content-5" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 5: Minijuego - ¡Encuentra el Riesgo!</h2>
-                <p class="text-gray-700 mb-3">Usa la lupa para inspeccionar. Dibuja si es necesario. Haz clic en los 5 riesgos de seguridad.</p>
+                <!-- NUEVO: Contenedor para la descripción del nivel -->
+                <p id="level-description" class="text-gray-700 mb-3 italic">Cargando descripción...</p>
                 
                 <div class="bg-gray-100 p-4 rounded-lg">
                     <!-- Controles del Juego -->
@@ -358,6 +361,7 @@
             const nextLevelBtn = document.getElementById('next-level-btn');
             const gameImage = document.getElementById('game-image');
             const gameCanvas = document.getElementById('game-canvas');
+            const levelDescriptionElement = document.getElementById('level-description'); // Nuevo
             const ctx = gameCanvas.getContext('2d');
             
             const toolButtons = document.querySelectorAll('.tool-btn');
@@ -368,19 +372,20 @@
             let hotspotsFound = new Set();
             const RISKS_PER_LEVEL = 5;
             
-            let currentTool = 'lupa'; // 'lupa', 'draw-red', 'draw-blue', 'erase'
+            let currentTool = 'lupa'; 
             let isDrawing = false;
             let lastX = 0;
             let lastY = 0;
 
             // --- BASE DE DATOS DE NIVELES ---
-            // ¡URLs de GitHub Corregidas!
-            // He mantenido las mismas posiciones de riesgo, pero puedes ajustarlas.
+            // ¡URLs de GitHub Corregidas y Descripciones Añadidas!
+            // ¡TAREA PARA TI!: Ajusta las coordenadas (top, left) de los 'spots'
             const gameLevels = [
                 {
                     level: 1,
+                    description: "Nivel 1 (Fácil): El Taller Mecánico. Riesgos obvios: amoladora sin guantes, motor caliente, riesgo de aplastamiento.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel1.png",
-                    spots: [
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
                         { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' },
                         { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' },
                         { id: 3, top: '60%', left: '70%' },
@@ -390,8 +395,9 @@
                 },
                 {
                     level: 2,
+                    description: "Nivel 2 (Fácil): La Fábrica de Juguetes. Riesgos claros: prensa pequeña, pintura sin protección, cuchilla de modelado.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel2.png",
-                    spots: [
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
                         { id: 1, top: '10%', left: '10%' },
                         { id: 2, top: '30%', left: '30%' },
                         { id: 3, top: '50%', left: '50%' },
@@ -401,8 +407,9 @@
                 },
                 {
                     level: 3,
+                    description: "Nivel 3 (Fácil/Media): La Cocina Caótica. Riesgos: mango caliente, cuchillo mal posicionado, quemadura por vapor.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel3.png",
-                    spots: [
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
                         { id: 1, top: '15%', left: '80%' },
                         { id: 2, top: '25%', left: '60%' },
                         { id: 3, top: '35%', left: '40%' },
@@ -412,46 +419,94 @@
                 },
                 {
                     level: 4,
+                    description: "Nivel 4 (Media): La Obra Ruidosa. Escena amplia. Riesgos: falta de guantes (ladrillos), carga suspendida, taladro percutor.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel4.png",
-                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '42%', left: '18%', w: '80px', h: '80px' },
+                        { id: 2, top: '72%', left: '22%', w: '100px', h: '50px' },
+                        { id: 3, top: '62%', left: '72%' },
+                        { id: 4, top: '22%', left: '12%' },
+                        { id: 5, top: '82%', left: '52%', w: '70px', h: '70px' }
+                    ]
                 },
                 {
                     level: 5,
+                    description: "Nivel 5 (Media): El Laboratorio. Riesgos sutiles: vidrio roto, derrame de ácido, quemadura por mechero.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel5.png",
-                    spots: [ { id: 1, top: '10%', left: '10%' }, { id: 2, top: '30%', left: '30%' }, { id: 3, top: '50%', left: '50%' }, { id: 4, top: '70%', left: '70%' }, { id: 5, top: '90%', left: '90%' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '15%', left: '15%' },
+                        { id: 2, top: '35%', left: '35%' },
+                        { id: 3, top: '55%', left: '55%' },
+                        { id: 4, top: '75%', left: '75%' },
+                        { id: 5, top: '85%', left: '85%' }
+                    ]
                 },
                 {
                     level: 6,
+                    description: "Nivel 6 (Media/Alta): La Carpintería. Entorno 'sucio'. Riesgos: mano cerca de hoja de sierra, astilla grande, atrapamiento.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel6.png",
-                    spots: [ { id: 1, top: '15%', left: '80%' }, { id: 2, top: '25%', left: '60%' }, { id: 3, top: '35%', left: '40%' }, { id: 4, top: '45%', left: '20%' }, { id: 5, top: '55%', left: '10%' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '18%', left: '82%' },
+                        { id: 2, top: '28%', left: '62%' },
+                        { id: 3, top: '38%', left: '42%' },
+                        { id: 4, top: '48%', left: '22%' },
+                        { id: 5, top: '58%', left: '12%' }
+                    ]
                 },
                 {
                     level: 7,
+                    description: "Nivel 7 (Difícil): El Almacén Desbordado. ¡Mucha acción! Riesgos: atrape en cinta, corte con cúter, caída de caja.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel7.png",
-                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '44%', left: '11%', w: '80px', h: '80px' },
+                        { id: 2, top: '74%', left: '21%', w: '100px', h: '50px' },
+                        { id: 3, top: '64%', left: '71%' },
+                        { id: 4, top: '24%', left: '11%' },
+                        { id: 5, top: '84%', left: '51%', w: '70px', h: '70px' }
+                    ]
                 },
                 {
                     level: 8,
+                    description: "Nivel 8 (Difícil): La Cosecha Caótica. Maquinaria pesada. Riesgos: partes móviles de tractor, corte en línea, atrape.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel8.png",
-                    spots: [ { id: 1, top: '10%', left: '10%' }, { id: 2, top: '30%', left: '30%' }, { id: 3, top: '50%', left: '50%' }, { id: 4, top: '70%', left: '70%' }, { id: 5, top: '90%', left: '90%' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '12%', left: '12%' },
+                        { id: 2, top: '32%', left: '32%' },
+                        { id: 3, top: '52%', left: '52%' },
+                        { id: 4, top: '72%', left: '72%' },
+                        { id: 5, top: '92%', left: '92%' }
+                    ]
                 },
                 {
                     level: 9,
+                    description: "Nivel 9 (Muy Difícil): El Astillero Tumultuoso. Escena compleja. Riesgos: quemadura soldadura, carga de grúa, cabrestante.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel9.png",
-                    spots: [ { id: 1, top: '15%', left: '80%' }, { id: 2, top: '25%', left: '60%' }, { id: 3, top: '35%', left: '40%' }, { id: 4, top: '45%', left: '20%' }, { id: 5, top: '55%', left: '10%' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '16%', left: '86%' },
+                        { id: 2, top: '26%', left: '66%' },
+                        { id: 3, top: '36%', left: '46%' },
+                        { id: 4, top: '46%', left: '26%' },
+                        { id: 5, top: '56%', left: '16%' }
+                    ]
                 },
                 {
                     level: 10,
+                    description: "Nivel 10 (Extrema): El Laberinto de Reciclaje. Entorno saturado. Riesgos: objeto punzante, borde metálico, compactadora.",
                     image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel10.png",
-                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                    spots: [ // ¡AJUSTA ESTAS COORDENADAS!
+                        { id: 1, top: '48%', left: '18%', w: '80px', h: '80px' },
+                        { id: 2, top: '78%', left: '28%', w: '100px', h: '50px' },
+                        { id: 3, top: '68%', left: '78%' },
+                        { id: 4, top: '28%', left: '18%' },
+                        { id: 5, top: '88%', left: '58%', w: '70px', h: '70px' }
+                    ]
                 }
             ];
 
             function resizeCanvas() {
-                // Ajusta el canvas al tamaño de la imagen mostrada
                 gameCanvas.width = gameImage.clientWidth;
                 gameCanvas.height = gameImage.clientHeight;
-                // Al redimensionar, el lienzo se borra, así que no necesitamos ctx.clearRect() aquí.
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
             }
 
             function loadLevel(levelIndex) {
@@ -463,17 +518,15 @@
                 
                 const levelData = gameLevels[levelIndex];
                 
-                // Cargar la imagen del nivel
                 gameImage.src = levelData.image; 
-                
-                // IMPORTANTE: Redimensionar el canvas DESPUÉS de que la imagen cargue
                 gameImage.onload = () => {
                     resizeCanvas();
                 };
 
                 levelTitleElement.textContent = `Nivel ${levelData.level}`;
+                levelDescriptionElement.textContent = levelData.description; // Mostrar descripción
                 
-                // Crear hotspots (invisibles)
+                // Crear hotspots (visibles para edición)
                 levelData.spots.forEach(spot => {
                     const spotEl = document.createElement('div');
                     spotEl.classList.add('hotspot');
@@ -520,13 +573,12 @@
 
             gameCanvas.addEventListener('mouseup', () => {
                 isDrawing = false;
-                ctx.beginPath(); // Finaliza la línea de dibujo
+                ctx.beginPath(); 
             });
 
             gameCanvas.addEventListener('mouseleave', () => {
                 isDrawing = false;
                 ctx.beginPath();
-                // Limpia la lupa si el ratón sale
                 if (currentTool === 'lupa') {
                     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
                 }
@@ -546,31 +598,29 @@
                 const radius = 60;
                 const zoom = 2;
                 
-                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia canvas
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); 
                 ctx.save();
                 
-                // 1. Dibuja el círculo de la lupa
                 ctx.beginPath();
                 ctx.arc(x, y, radius, 0, Math.PI * 2);
                 ctx.strokeStyle = '#555';
                 ctx.lineWidth = 4;
                 ctx.stroke();
-                ctx.clip(); // Recorta el área a ese círculo
+                ctx.clip(); 
                 
-                // 2. Dibuja la imagen ampliada dentro del círculo
                 ctx.drawImage(
                     gameImage,
-                    x - radius / zoom, // coord. X de la imagen original
-                    y - radius / zoom, // coord. Y de la imagen original
-                    radius * 2 / zoom, // ancho de la fuente
-                    radius * 2 / zoom, // alto de la fuente
-                    x - radius,        // coord. X en el canvas
-                    y - radius,        // coord. Y en el canvas
-                    radius * 2,        // ancho en el canvas
-                    radius * 2         // alto en el canvas
+                    x - radius / zoom, 
+                    y - radius / zoom, 
+                    radius * 2 / zoom, 
+                    radius * 2 / zoom, 
+                    x - radius,        
+                    y - radius,        
+                    radius * 2,        
+                    radius * 2         
                 );
                 
-                ctx.restore(); // Quita el recorte
+                ctx.restore(); 
             }
 
             function drawOnCanvas(x, y) {
@@ -587,7 +637,7 @@
                     ctx.globalCompositeOperation = 'source-over';
                 } else if (currentTool === 'erase') {
                     ctx.lineWidth = 20;
-                    ctx.globalCompositeOperation = 'destination-out'; // Efecto borrador
+                    ctx.globalCompositeOperation = 'destination-out'; 
                 }
                 
                 ctx.lineTo(x, y);
@@ -595,28 +645,24 @@
                 [lastX, lastY] = [x, y];
             }
 
-
             // --- Lógica de Clic para Hotspots (A través del Canvas) ---
             gameCanvas.addEventListener('click', (e) => {
                 const pos = getMousePos(e);
                 
-                // Busca qué hotspot (div invisible) fue clickeado
                 const hotspotsInLevel = hotspotContainer.querySelectorAll('.hotspot');
                 hotspotsInLevel.forEach(spot => {
                     const spotRect = spot.getBoundingClientRect();
                     const canvasRect = gameCanvas.getBoundingClientRect();
                     
-                    // Convierte las coordenadas del div a coordenadas del canvas
                     const spotLeft = spotRect.left - canvasRect.left;
                     const spotTop = spotRect.top - canvasRect.top;
                     const spotRight = spotLeft + spotRect.width;
                     const spotBottom = spotTop + spotRect.height;
 
-                    // Comprueba si el clic (pos.x, pos.y) está dentro del hotspot
                     if (pos.x >= spotLeft && pos.x <= spotRight && pos.y >= spotTop && pos.y <= spotBottom) {
                         const spotId = spot.dataset.id;
                         if (!hotspotsFound.has(spotId)) {
-                            spot.classList.add('found'); // Muestra el div verde detrás del canvas
+                            spot.classList.add('found'); 
                             hotspotsFound.add(spotId);
                             foundCount++;
                             updateCounter();
@@ -645,13 +691,13 @@
             }
 
             resetElement.addEventListener('click', () => {
-                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); 
                 loadLevel(currentLevel);
             });
 
             nextLevelBtn.addEventListener('click', () => {
                 if (currentLevel < gameLevels.length - 1) {
-                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); 
                     loadLevel(currentLevel + 1);
                 }
             });
@@ -662,16 +708,14 @@
                 levelBtn.classList.add('level-btn');
                 levelBtn.textContent = level.level;
                 levelBtn.addEventListener('click', () => {
-                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); 
                     loadLevel(index);
                 });
                 levelSelectorElement.appendChild(levelBtn);
             });
 
-            // Cargar Nivel 1 al inicio
             loadLevel(0);
             
-            // Redimensionar el canvas si la ventana cambia de tamaño
             new ResizeObserver(resizeCanvas).observe(gameImage);
 
 
@@ -696,6 +740,7 @@
             ];
 
             function buildQuiz() {
+                quizContainer.innerHTML = ''; // Limpiar quiz anterior si existe
                 quizQuestions.forEach((item, index) => {
                     const qDiv = document.createElement('div');
                     qDiv.classList.add('bg-gray-50', 'p-5', 'rounded-lg', 'border');
@@ -715,6 +760,10 @@
                     qDiv.appendChild(optsDiv);
                     quizContainer.appendChild(qDiv);
                 });
+                // Restaurar estado de botones y resultados
+                resultsContainer.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+                quizContainer.classList.remove('hidden');
             }
 
             function showResults() {
@@ -744,8 +793,16 @@
                 submitButton.classList.add('hidden');
                 quizContainer.classList.add('hidden');
             }
+            
+            // Re-construir el quiz cada vez que se muestra la pestaña 6
+            // (para reiniciar las respuestas)
+            tabs.forEach(tab => {
+                if(tab.dataset.tab === '6') {
+                    tab.addEventListener('click', buildQuiz);
+                }
+            });
 
-            buildQuiz();
+            buildQuiz(); // Construir el quiz por primera vez
             submitButton.addEventListener('click', showResults);
         
         });
@@ -753,6 +810,5 @@
 
 </body>
 </html>
-
 
 
