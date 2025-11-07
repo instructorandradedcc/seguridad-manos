@@ -38,6 +38,8 @@
         #game-area {
             position: relative; 
             cursor: none; 
+            /* Para asegurar que el canvas se ajuste */
+            line-height: 0; 
         }
         
         #game-canvas {
@@ -47,15 +49,14 @@
             width: 100%;
             height: 100%;
             z-index: 10; 
-            z-index: 10; /* Por encima de todo en el área de juego */
         }
 
         .hotspot {
             /* ----- ¡MODO JUEGO! ----- */
-            /* ¡Cambio Realizado! Los hotspots ahora son 100% invisibles. */
+            /* Círculos 100% invisibles, como pediste */
             opacity: 0; 
             background-color: transparent;
-            border: 2px dashed transparent; /* Se mantiene la base para la transición */
+            border: 2px dashed transparent; 
             /* ----- FIN MODO JUEGO ----- */
             
             position: absolute;
@@ -68,7 +69,7 @@
         }
         
         .hotspot.found {
-            opacity: 1; /* Se hace 100% visible al encontrarlo */
+            opacity: 1; /* Se hace visible al encontrarlo */
             border: 4px solid #10B981; /* green-500 */
             background-color: rgba(16, 185, 129, 0.4);
         }
@@ -149,6 +150,7 @@
         </header>
 
         <div class="border-b border-gray-200">
+            <!-- NAVEGACIÓN DE PESTAÑAS (CORREGIDA) -->
             <nav class="flex flex-wrap justify-center -mb-px px-4" aria-label="Tabs">
                 <button class="tab tab-active py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="1">1. Cuidado General</button>
                 <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="2">2. H. Manuales</button>
@@ -248,7 +250,7 @@
             <!-- PESTAÑA 5: MINIJUEGO "ENCUENTRA EL RIESGO" -->
             <div id="tab-content-5" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 5: Minijuego - ¡Encuentra el Riesgo!</h2>
-                <!-- NUEVO: Contenedor para la descripción del nivel -->
+                <!-- Párrafo para la descripción del nivel (CORREGIDO) -->
                 <p id="level-description" class="text-gray-700 mb-3 italic">Cargando descripción...</p>
                 
                 <div class="bg-gray-100 p-4 rounded-lg">
@@ -328,24 +330,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
-            // --- LÓGICA DE NAVEGACIÓN DE PESTAÑAS ---
+            // --- LÓGICA DE NAVEGACIÓN DE PESTAÑAS (CORREGIDA) ---
+            // Este bloque es el que faltaba o estaba roto
             const tabs = document.querySelectorAll('.tab');
             const tabContents = document.querySelectorAll('.tab-content');
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabNumber = tab.dataset.tab;
+
+                    // Ocultar todo el contenido
+                    tabContents.forEach(content => {
+                        content.classList.remove('tab-content-active');
+                    });
+
+                    // Quitar clase activa de todas las pestañas
                     tabs.forEach(t => {
                         t.classList.remove('tab-active');
                         t.classList.add('tab-inactive');
                     });
+
+                    // Mostrar contenido de la pestaña seleccionada
+                    document.getElementById('tab-content-' + tabNumber).classList.add('tab-content-active');
+                    
+                    // Añadir clase activa a la pestaña seleccionada
                     tab.classList.add('tab-active');
                     tab.classList.remove('tab-inactive');
-                    
-                    tabContents.forEach(content => {
-                        content.classList.remove('tab-content-active');
-                    });
-                    document.getElementById('tab-content-' + tabNumber).classList.add('tab-content-active');
                 });
             });
 
@@ -361,7 +371,8 @@
             const nextLevelBtn = document.getElementById('next-level-btn');
             const gameImage = document.getElementById('game-image');
             const gameCanvas = document.getElementById('game-canvas');
-            const levelDescriptionElement = document.getElementById('level-description'); // Nuevo
+            // Elemento de descripción (CORREGIDO)
+            const levelDescriptionElement = document.getElementById('level-description'); 
             const ctx = gameCanvas.getContext('2d');
             
             const toolButtons = document.querySelectorAll('.tool-btn');
@@ -377,8 +388,7 @@
             let lastX = 0;
             let lastY = 0;
 
-            // --- BASE DE DATOS DE NIVELES ---
-            // ¡URLs de GitHub Corregidas y Descripciones Añadidas!
+            // --- BASE DE DATOS DE NIVELES (CON DESCRIPCIONES) ---
             // ¡TAREA PARA TI!: Ajusta las coordenadas (top, left) de los 'spots'
             const gameLevels = [
                 {
@@ -524,9 +534,10 @@
                 };
 
                 levelTitleElement.textContent = `Nivel ${levelData.level}`;
-                levelDescriptionElement.textContent = levelData.description; // Mostrar descripción
+                // LÍNEA CORREGIDA: Carga la descripción en el párrafo HTML
+                levelDescriptionElement.textContent = levelData.description; 
                 
-                // Crear hotspots (visibles para edición)
+                // Crear hotspots (invisibles)
                 levelData.spots.forEach(spot => {
                     const spotEl = document.createElement('div');
                     spotEl.classList.add('hotspot');
@@ -732,7 +743,7 @@
                 { question: "Si encuentras un destornillador con el mango astillado, ¿qué debes hacer?", options: ["Usarlo con cuidado.", "Envolverlo con cinta aislante.", "Informar y retirarlo del servicio.", "Usarlo solo para trabajos ligeros."], answer: "Informar y retirarlo del servicio." },
                 { question: "Al usar una llave de ajuste (inglesa), ¿cuál es la forma más segura de aplicar fuerza?", options: ["Empujando la llave.", "Tirando de la llave hacia ti.", "Golpeándola con un martillo.", "Poniéndole un tubo para hacer más palanca."], answer: "Tirando de la llave hacia ti." },
                 { question: "¿Qué NUNCA debes hacer con una herramienta eléctrica como un esmeril?", options: ["Usarla con guantes.", "Quitarle la guarda de seguridad.", "Desconectarla para cambiar el disco.", "Revisar el cable antes de usar."], answer: "Quitarle la guarda de seguridad." },
-                { question: "Encuentras un cable de un taladro 'pelado', pero la herramienta funciona. ¿Qué haces?", options: ["La uso rápido, con cuidado de no tocar el cable.", "Le pongo cinta aislante y sigo trabajando.", "La desconecto, la marco como 'PELIGROSA' y la reporto.", "La uso solo en lugares secos."], answer: "La desconecto, la marco como 'PELIGROSA' y la reporto." },
+                { question: "Encuentras un cable de un taladro 'pelado', pero la herramienta funciona. ¿Qué haces?", options: ["La uso rápido, con cuidado de no tocar el cable.", "Le pongo cinta aislante y sigo trabajando.", "La desconecto, la marco como 'PELIGSA' y la reporto.", "La uso solo en lugares secos."], answer: "La desconecto, la marco como 'PELIGSA' y la reporto." },
                 { question: "¿En qué condición NO debes usar una herramienta eléctrica?", options: ["Con gafas de seguridad.", "Con guantes de carnaza.", "Con el piso húmedo o con charcos.", "En un banco de trabajo limpio."], answer: "Con el piso húmedo o con charcos." },
                 { question: "El riesgo de 'atrapamiento' por anillos o pulseras es mayor con:", options: ["Herramientas sin batería.", "Maquinaria rotativa (taladros, esmeriles).", "Herramientas manuales (martillos).", "Cremas hidratantes."], answer: "Maquinaria rotativa (taladros, esmeriles)." },
                 { question: "La inspección 'pre-uso' de una herramienta es responsabilidad de:", options: ["El supervisor únicamente.", "El personal de mantenimiento.", "El compañero de al lado.", "El operador que va a usar la herramienta."], answer: "El operador que va a usar la herramienta." },
@@ -810,5 +821,4 @@
 
 </body>
 </html>
-
 
