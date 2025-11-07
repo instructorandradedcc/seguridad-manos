@@ -34,29 +34,48 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Estilos para el nuevo juego "Encuentra el Riesgo" */
+        /* --- ESTILOS DEL JUEGO --- */
         .hotspot {
             position: absolute;
-            width: 45px;
-            height: 45px;
+            width: 60px; /* Más grande */
+            height: 60px; /* Más grande */
             border: 3px dashed #EF4444; /* red-500 */
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            background-color: rgba(239, 68, 68, 0.15);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
         }
         .hotspot:hover {
-            background-color: rgba(239, 68, 68, 0.3);
+            background-color: rgba(239, 68, 68, 0.4);
             transform: scale(1.1);
         }
         .hotspot.found {
             border: 4px solid #10B981; /* green-500 */
-            background-color: rgba(16, 185, 129, 0.3);
+            background-color: rgba(16, 185, 129, 0.4);
             backdrop-filter: blur(0);
         }
         
-        /* Estilo para el botón de video */
+        .level-btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: #E5E7EB; /* gray-200 */
+            color: #374151; /* gray-700 */
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        .level-btn:hover {
+            background-color: #D1D5DB; /* gray-300 */
+        }
+        .level-btn.active-level {
+            background-color: #3B82F6; /* blue-500 */
+            color: white;
+            font-weight: 700;
+        }
+
+        /* --- ESTILOS DEL BOTÓN DE VIDEO --- */
         .video-button {
             display: inline-flex;
             align-items: center;
@@ -81,61 +100,51 @@
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
         
-        <!-- CABECERA -->
         <header class="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white text-center">
             <h1 class="text-3xl md:text-4xl font-bold">Taller Interactivo: Seguridad de Manos</h1>
             <p class="mt-2 text-blue-100">Una guía completa para el cuidado y la prevención</p>
         </header>
 
-        <!-- NAVEGACIÓN DE PESTAÑAS -->
         <div class="border-b border-gray-200">
             <nav class="flex flex-wrap justify-center -mb-px px-4" aria-label="Tabs">
                 <button class="tab tab-active py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="1">1. Cuidado General</button>
                 <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="2">2. H. Manuales</button>
                 <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="3">3. H. Eléctricas</button>
                 <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="4">4. Videos Adicionales</button>
-                <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="5">5. Minijuego</button>
+                <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="5">5. Minijuego (10 Niveles)</button>
                 <button class="tab tab-inactive py-4 px-3 md:px-6 border-b-4 text-sm md:text-base" data-tab="6">6. Evaluación</button>
             </nav>
         </div>
 
-        <!-- CONTENIDO DE PESTAÑAS -->
         <div id="tab-contents" class="p-6 md:p-10">
 
             <!-- PESTAÑA 1: CUIDADO GENERAL -->
             <div id="tab-content-1" class="tab-content tab-content-active">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 1: Cuidado General de las Manos</h2>
-                <p class="text-gray-700 mb-6">La primera línea de defensa es mantener tus manos limpias y en buenas condiciones. La piel intacta es tu mejor protección. Explora los dos pilares del cuidado general:</p>
-                
-                <!-- Botón de Video 1 -->
+                <p class="text-gray-700 mb-6">La primera línea de defensa es mantener tus manos limpias y en buenas condiciones. La piel intacta es tu mejor protección.</p>
                 <div class="my-6 text-center">
-                    <a href="https://www.youtube.com/watch?v=M7WGxBtShEw" target="_blank" class="video-button">
+                    <a href="https://www.youtube.com/watch?v=S9e-b-p8O6E" target="_blank" class="video-button">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /><path d="M10.875 12a1.125 1.125 0 1 1 2.25 0v4.5a1.125 1.125 0 1 1-2.25 0v-4.5Z" /></svg>
-                        Ver Video: Importancia de Lavar las Manos
+                        Ver Video: Lavado de Manos (OPS/OMS)
                     </a>
                 </div>
-                <!-- Fin de Botón de Video -->
-
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 mb-3">1. Lavado de Manos</h3>
                         <ul class="list-disc list-inside space-y-2 text-gray-600">
                             <li>Usa jabón y agua tibia.</li>
-                            <li>Frota por al menos 20 segundos (palmas, dorso, entre dedos, uñas).</li>
-                            <li>Seca con toallas limpias, preferiblemente de papel.</li>
-                            <li>Usa desinfectante a base de alcohol si no hay agua disponible.</li>
+                            <li>Frota por al menos 20 segundos.</li>
+                            <li>Seca con toallas limpias.</li>
                         </ul>
                     </div>
                     <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                         <h3 class="text-xl font-semibold text-gray-800 mb-3">2. Hidratación y Cuidado</h3>
                         <ul class="list-disc list-inside space-y-2 text-gray-600">
-                            <li>Usa cremas hidratantes para evitar que la piel se reseque y agriete.</li>
-                            <li>Revisa tus manos en busca de cortes, ampollas o irritaciones.</li>
-                            <li>Cubre cualquier herida con un vendaje limpio antes de trabajar.</li>
-                            <li>No uses anillos o pulseras al operar maquinaria.</li>
+                            <li>Usa cremas hidratantes para evitar grietas.</li>
+                            <li>Revisa tus manos en busca de cortes.</li>
+                            <li>Cubre cualquier herida antes de trabajar.</li>
                         </ul>
                     </div>
                 </div>
@@ -145,22 +154,16 @@
             <div id="tab-content-2" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 2: Seguridad con Herramientas Manuales</h2>
                 <p class="text-gray-700 mb-6">Martillos, destornilladores, alicates... son tan comunes que olvidamos sus riesgos. El uso correcto y la inspección son claves.</p>
-
-                <!-- Botón de Video 2 -->
                 <div class="my-6 text-center">
                     <a href="https://www.youtube.com/watch?v=qFRYnaGjLvg" target="_blank" class="video-button">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /><path d="M10.875 12a1.125 1.125 0 1 1 2.25 0v4.5a1.125 1.125 0 1 1-2.25 0v-4.5Z" /></svg>
                         Ver Video: Riesgos con Herramientas Manuales
                     </a>
                 </div>
-                <!-- Fin de Botón de Video -->
-
                 <ul class="list-disc list-outside space-y-3 pl-5 text-gray-700">
-                    <li><strong class="text-gray-800">Inspección Previa:</strong> Revisa mangos astillados, cabezas sueltas o puntas desgastadas.</li>
-                    <li><strong class="text-gray-800">Uso Correcto:</strong> Usa la herramienta para su fin. No uses un destornillador como cincel.</li>
+                    <li><strong class="text-gray-800">Inspección Previa:</strong> Revisa mangos astillados o cabezas sueltas.</li>
+                    <li><strong class="text-gray-800">Uso Correcto:</strong> Usa la herramienta para su fin.</li>
                     <li><strong class="text-gray-800">EPP Adecuado:</strong> ¡Usa siempre guantes y gafas de seguridad!</li>
-                    <li><strong class="text-gray-800">Fuerza:</strong> Tira de las llaves, no empujes. Mantén una postura estable.</li>
-                    <li><strong class="text-gray-800">Almacenamiento:</strong> Guárdalas limpias y en su lugar. No las dejes en bordes o en el suelo.</li>
                 </ul>
             </div>
 
@@ -168,22 +171,16 @@
             <div id="tab-content-3" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 3: Seguridad con Herramientas Eléctricas</h2>
                 <p class="text-gray-700 mb-6">El riesgo aquí se duplica: el riesgo mecánico (corte, golpe) y el riesgo eléctrico (electrocución).</p>
-
-                <!-- Botón de Video 3 -->
                 <div class="my-6 text-center">
                     <a href="https://www.youtube.com/watch?v=ZRi4htAW1jY" target="_blank" class="video-button">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /><path d="M10.875 12a1.125 1.125 0 1 1 2.25 0v4.5a1.125 1.125 0 1 1-2.25 0v-4.5Z" /></svg>
                         Ver Video: Riesgos con Herramientas Eléctricas
                     </a>
                 </div>
-                <!-- Fin de Botón de Video -->
-
                 <ul class="list-disc list-outside space-y-3 pl-5 text-gray-700">
-                    <li><strong class="text-gray-800">Inspección de Cable:</strong> Revisa cables y enchufes. Un cable pelado es una herramienta "fuera de servicio".</li>
-                    <li><strong class="text-gray-800">Guardas de Seguridad:</strong> NUNCA operes un esmeril o sierra sin su guarda de protección.</li>
-                    <li><strong class="text-gray-800">Aislamiento:</strong> Asegúrate de que la herramienta tenga doble aislamiento (símbolo de doble cuadrado).</li>
-                    <li><strong class="text-gray-800">Entorno:</strong> No uses herramientas eléctricas en zonas húmedas o charcos.</li>
-                    <li><strong class="text-gray-800">Desconectar:</strong> Desconecta la herramienta antes de cambiar accesorios (discos, brocas).</li>
+                    <li><strong class="text-gray-800">Inspección de Cable:</strong> Un cable pelado es una herramienta "fuera de servicio".</li>
+                    <li><strong class="text-gray-800">Guardas de Seguridad:</strong> NUNCA operes un esmeril o sierra sin su guarda.</li>
+                    <li><strong class="text-gray-800">Entorno:</strong> No uses herramientas eléctricas en zonas húmedas.</li>
                 </ul>
             </div>
 
@@ -191,67 +188,55 @@
             <div id="tab-content-4" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 4: Videos Adicionales</h2>
                 <p class="text-gray-700 mb-6">Aquí tienes material de refuerzo sobre actos y condiciones inseguras, y el uso de EPP.</p>
-
                 <div class="space-y-6">
-                    <!-- Botón de Video 4 -->
                     <div class="text-center">
                         <a href="https://www.youtube.com/watch?v=BQjok021EbE" target="_blank" class="video-button">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /><path d="M10.875 12a1.125 1.125 0 1 1 2.25 0v4.5a1.125 1.125 0 1 1-2.25 0v-4.5Z" /></svg>
                             Ver Video: Actos y Condiciones Inseguras
                         </a>
                     </div>
-                    <!-- Fin de Botón de Video 4 -->
-                    
-                    <!-- Botón de Video 5 -->
                     <div class="text-center">
                         <a href="https://www.youtube.com/watch?v=WZ7Lgat30Uc" target="_blank" class="video-button">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /><path d="M10.875 12a1.125 1.125 0 1 1 2.25 0v4.5a1.125 1.125 0 1 1-2.25 0v-4.5Z" /></svg>
                             Ver Video: Importancia del EPP (Guantes)
                         </a>
                     </div>
-                    <!-- Fin de Botón de Video 5 -->
                 </div>
             </div>
 
             <!-- PESTAÑA 5: MINIJUEGO "ENCUENTRA EL RIESGO" -->
             <div id="tab-content-5" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 5: Minijuego - ¡Encuentra el Riesgo!</h2>
-                <p class="text-gray-700 mb-3">En la siguiente imagen de un taller, hay 5 riesgos de seguridad ocultos. Haz clic sobre ellos para encontrarlos.</p>
+                <p class="text-gray-700 mb-3">Encuentra los 5 riesgos de seguridad ocultos en la imagen.</p>
                 
                 <div class="bg-gray-100 p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-3">
+                    <!-- Controles del Juego -->
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
                         <div class="text-xl font-semibold">
-                            Riesgos encontrados: <span id="hotspot-counter" class="text-blue-600">0</span> / 5
+                            <span id="level-title">Nivel 1</span> - Riesgos: 
+                            <span id="hotspot-counter" class="text-blue-600">0</span> / 5
                         </div>
-                        <button id="hotspot-reset" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-400 transition">Reiniciar</button>
+                        <button id="hotspot-reset" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-400 transition">Reiniciar Nivel</button>
+                    </div>
+
+                    <!-- Selector de Nivel -->
+                    <div id="level-selector" class="flex flex-wrap gap-2 mb-3 border-b pb-3">
+                        <!-- Los botones de nivel se generan con JS -->
                     </div>
 
                     <!-- ÁREA DE JUEGO -->
                     <div id="game-area" class="relative w-full max-w-2xl mx-auto border-4 border-gray-300 rounded-lg overflow-hidden">
-                        <!-- Imagen de fondo del juego (Usa una imagen de un taller) -->
-                        <img src="https://placehold.co/800x600/6b7280/f9fafb?text=Imagen+de+un+Taller" alt="Escena de un taller con riesgos ocultos" class="w-full h-auto block">
+                        <img id="game-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg" alt="Escena de un taller" class="w-full h-auto block">
                         
-                        <!-- Puntos Calientes (Hotspots) - Posicionados absolutamente -->
-                        <!-- RIESGO 1: Derrame en el suelo -->
-                        <div class="hotspot" data-id="1" style="top: 75%; left: 20%; width: 100px; height: 50px;" title="Riesgo: Derrame de aceite"></div>
-                        
-                        <!-- RIESGO 2: Cable eléctrico dañado -->
-                        <div class="hotspot" data-id="2" style="top: 50%; left: 45%; width: 120px; height: 40px;" title="Riesgo: Cable de herramienta dañado"></div>
-                        
-                        <!-- RIESGO 3: Herramienta sin guarda -->
-                        <div class="hotspot" data-id="3" style="top: 60%; left: 70%;" title="Riesgo: Esmeril sin guarda de seguridad"></div>
-                        
-                        <!-- RIESGO 4: EPP faltante -->
-                        <div class="hotspot" data-id="4" style="top: 25%; left: 15%; width: 60px;" title="Riesgo: Gafas de seguridad no se están usando"></div>
-                        
-                        <!-- RIESGO 5: Obstrucción -->
-                        <div class="hotspot" data-id="5" style="top: 80%; left: 55%; width: 70px; height: 70px;" title="Riesgo: Caja obstruyendo el paso"></div>
+                        <!-- Contenedor para los hotspots dinámicos -->
+                        <div id="hotspot-container"></div>
                     </div>
                     <!-- FIN ÁREA DE JUEGO -->
 
                     <div id="hotspot-success" class="hidden mt-4 p-4 bg-green-100 text-green-800 border border-green-300 rounded-lg text-center">
-                        <h3 class="font-bold text-lg">¡Excelente!</h3>
-                        <p>Has encontrado todos los riesgos. ¡Tienes un gran ojo para la seguridad!</p>
+                        <h3 class="font-bold text-lg">¡Nivel Completado!</h3>
+                        <p>Has encontrado todos los riesgos. ¡Excelente!</p>
+                        <button id="next-level-btn" class="mt-2 px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition">Siguiente Nivel</button>
                     </div>
                 </div>
             </div>
@@ -260,27 +245,19 @@
             <div id="tab-content-6" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 6: Evaluación Final</h2>
                 <p class="text-gray-700 mb-6">Demuestra lo que has aprendido. Selecciona la respuesta correcta para cada pregunta.</p>
-                
-                <div id="quiz-container" class="space-y-6">
-                    <!-- Las preguntas se cargarán aquí -->
-                </div>
-                
+                <div id="quiz-container" class="space-y-6"></div>
                 <button id="quiz-submit" class="mt-8 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow hover:bg-blue-700 transition">
                     Ver Resultados
                 </button>
-                
                 <div id="quiz-results" class="hidden mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
                     <h3 class="text-2xl font-bold mb-4">Tus Resultados</h3>
                     <p id="quiz-score" class="text-xl font-semibold mb-4"></p>
-                    <div id="quiz-feedback" class="space-y-4">
-                        <!-- El feedback de cada pregunta se cargará aquí -->
-                    </div>
+                    <div id="quiz-feedback" class="space-y-4"></div>
                 </div>
             </div>
 
-        </div> <!-- Fin de #tab-contents -->
-
-    </div> <!-- Fin del contenedor principal -->
+        </div> 
+    </div> 
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -292,56 +269,135 @@
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabNumber = tab.dataset.tab;
-
-                    // Ocultar todo el contenido
-                    tabContents.forEach(content => {
-                        content.classList.remove('tab-content-active');
-                    });
-
-                    // Quitar clase activa de todas las pestañas
                     tabs.forEach(t => {
                         t.classList.remove('tab-active');
                         t.classList.add('tab-inactive');
                     });
-
-                    // Mostrar contenido de la pestaña seleccionada
-                    document.getElementById('tab-content-' + tabNumber).classList.add('tab-content-active');
-                    
-                    // Añadir clase activa a la pestaña seleccionada
                     tab.classList.add('tab-active');
                     tab.classList.remove('tab-inactive');
+                    
+                    tabContents.forEach(content => {
+                        content.classList.remove('tab-content-active');
+                    });
+                    document.getElementById('tab-content-' + tabNumber).classList.add('tab-content-active');
                 });
             });
 
 
-            // --- LÓGICA DEL MINIJUEGO "ENCUENTRA EL RIESGO" ---
-            const hotspots = document.querySelectorAll('.hotspot');
+            // --- LÓGICA DEL MINIJUEGO DE 10 NIVELES ---
+
+            const hotspotContainer = document.getElementById('hotspot-container');
             const counterElement = document.getElementById('hotspot-counter');
             const successElement = document.getElementById('hotspot-success');
             const resetElement = document.getElementById('hotspot-reset');
-            const totalHotspots = 5;
+            const levelTitleElement = document.getElementById('level-title');
+            const levelSelectorElement = document.getElementById('level-selector');
+            const nextLevelBtn = document.getElementById('next-level-btn');
+            const gameImage = document.getElementById('game-image');
+
+            let currentLevel = 0; // Índice del nivel
             let foundCount = 0;
-            let hotspotsFound = new Set(); // Para evitar contar doble clic
+            let hotspotsFound = new Set();
+            const RISKS_PER_LEVEL = 5;
+
+            // --- BASE DE DATOS DE NIVELES ---
+            // Aquí puedes cambiar las URLs de las imágenes y las coordenadas de los riesgos.
+            // 'w' y 'h' son opcionales, por defecto son 60x60.
+            const gameLevels = [
+                {
+                    level: 1,
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    spots: [
+                        { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, // Zona de sierra de cinta
+                        { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, // Desorden en el suelo
+                        { id: 3, top: '60%', left: '70%' }, // Herramientas en el banco
+                        { id: 4, top: '25%', left: '15%' }, // Estantería alta
+                        { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } // Cable en el suelo
+                    ]
+                },
+                {
+                    level: 2,
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    spots: [
+                        { id: 1, top: '10%', left: '10%' },
+                        { id: 2, top: '30%', left: '30%' },
+                        { id: 3, top: '50%', left: '50%' },
+                        { id: 4, top: '70%', left: '70%' },
+                        { id: 5, top: '90%', left: '90%' }
+                    ]
+                },
+                {
+                    level: 3,
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    spots: [
+                        { id: 1, top: '15%', left: '80%' },
+                        { id: 2, top: '25%', left: '60%' },
+                        { id: 3, top: '35%', left: '40%' },
+                        { id: 4, top: '45%', left: '20%' },
+                        { id: 5, top: '55%', left: '10%' }
+                    ]
+                },
+                // Añadí 7 niveles más con posiciones aleatorias (usando la misma imagen)
+                ...Array.from({ length: 7 }, (v, i) => ({
+                    level: i + 4,
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    spots: Array.from({ length: 5 }, (v, j) => ({
+                        id: j + 1,
+                        top: `${Math.floor(Math.random() * 80) + 10}%`,
+                        left: `${Math.floor(Math.random() * 80) + 10}%`
+                    }))
+                }))
+            ];
+
+            function loadLevel(levelIndex) {
+                currentLevel = levelIndex;
+                foundCount = 0;
+                hotspotsFound.clear();
+                hotspotContainer.innerHTML = '';
+                successElement.classList.add('hidden');
+                
+                const levelData = gameLevels[levelIndex];
+                gameImage.src = levelData.image; // Cargar la imagen del nivel
+                levelTitleElement.textContent = `Nivel ${levelData.level}`;
+                
+                // Crear hotspots
+                levelData.spots.forEach(spot => {
+                    const spotEl = document.createElement('div');
+                    spotEl.classList.add('hotspot');
+                    spotEl.dataset.id = spot.id;
+                    spotEl.style.top = spot.top;
+                    spotEl.style.left = spot.left;
+                    if (spot.w) spotEl.style.width = spot.w;
+                    if (spot.h) spotEl.style.height = spot.h;
+                    hotspotContainer.appendChild(spotEl);
+                });
+
+                updateCounter();
+                updateLevelButtons();
+            }
 
             function updateCounter() {
                 counterElement.textContent = foundCount;
-                if (foundCount === totalHotspots) {
+                if (foundCount === RISKS_PER_LEVEL) {
                     successElement.classList.remove('hidden');
+                    if (currentLevel < gameLevels.length - 1) {
+                        nextLevelBtn.classList.remove('hidden');
+                    } else {
+                        nextLevelBtn.classList.add('hidden'); // No hay más niveles
+                    }
                 }
             }
-
-            function resetGame() {
-                foundCount = 0;
-                hotspotsFound.clear();
-                hotspots.forEach(spot => {
-                    spot.classList.remove('found');
+            
+            function updateLevelButtons() {
+                document.querySelectorAll('.level-btn').forEach((btn, index) => {
+                    btn.classList.toggle('active-level', index === currentLevel);
                 });
-                successElement.classList.add('hidden');
-                updateCounter();
             }
 
-            hotspots.forEach(spot => {
-                spot.addEventListener('click', () => {
+            // Manejador de clics en hotspots (usando delegación)
+            hotspotContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('hotspot')) {
+                    const spot = e.target;
                     const spotId = spot.dataset.id;
                     if (!hotspotsFound.has(spotId)) {
                         spot.classList.add('found');
@@ -349,10 +405,30 @@
                         foundCount++;
                         updateCounter();
                     }
-                });
+                }
             });
 
-            resetElement.addEventListener('click', resetGame);
+            // Botón de Reiniciar
+            resetElement.addEventListener('click', () => loadLevel(currentLevel));
+
+            // Botón de Siguiente Nivel
+            nextLevelBtn.addEventListener('click', () => {
+                if (currentLevel < gameLevels.length - 1) {
+                    loadLevel(currentLevel + 1);
+                }
+            });
+
+            // Crear botones de Nivel
+            gameLevels.forEach((level, index) => {
+                const levelBtn = document.createElement('button');
+                levelBtn.classList.add('level-btn');
+                levelBtn.textContent = level.level;
+                levelBtn.addEventListener('click', () => loadLevel(index));
+                levelSelectorElement.appendChild(levelBtn);
+            });
+
+            // Cargar Nivel 1 al inicio
+            loadLevel(0);
 
 
             // --- LÓGICA DE LA EVALUACIÓN (QUIZ) ---
@@ -363,164 +439,55 @@
             const feedbackElement = document.getElementById('quiz-feedback');
 
             const quizQuestions = [
-                // Preguntas de Cuidado General
-                {
-                    question: "¿Por qué es importante usar crema hidratante en las manos?",
-                    options: [
-                        "Para que huelan bien.",
-                        "Para evitar que la piel se agriete y se abra a infecciones.",
-                        "Para limpiar la grasa.",
-                        "Para que los guantes resbalen mejor."
-                    ],
-                    answer: "Para evitar que la piel se agriete y se abra a infecciones."
-                },
-                {
-                    question: "¿Cuál es el tiempo mínimo recomendado para frotarse las manos al lavarlas?",
-                    options: [
-                        "5 segundos",
-                        "10 segundos",
-                        "20 segundos",
-                        "1 minuto"
-                    ],
-                    answer: "20 segundos"
-                },
-                // Preguntas de Herramientas Manuales
-                {
-                    question: "Si encuentras un destornillador con el mango astillado, ¿qué debes hacer?",
-                    options: [
-                        "Usarlo con cuidado.",
-                        "Envolverlo con cinta aislante.",
-                        "Informar y retirarlo del servicio.",
-                        "Usarlo solo para trabajos ligeros."
-                    ],
-                    answer: "Informar y retirarlo del servicio."
-                },
-                {
-                    question: "Al usar una llave de ajuste (inglesa), ¿cuál es la forma más segura de aplicar fuerza?",
-                    options: [
-                        "Empujando la llave.",
-                        "Tirando de la llave hacia ti.",
-                        "Golpeándola con un martillo.",
-                        "Poniéndole un tubo para hacer más palanca."
-                    ],
-                    answer: "Tirando de la llave hacia ti."
-                },
-                // Preguntas de Herramientas Eléctricas
-                {
-                    question: "¿Qué NUNCA debes hacer con una herramienta eléctrica como un esmeril?",
-                    options: [
-                        "Usarla con guantes.",
-                        "Quitarle la guarda de seguridad.",
-                        "Desconectarla para cambiar el disco.",
-                        "Revisar el cable antes de usar."
-                    ],
-                    answer: "Quitarle la guarda de seguridad."
-                },
-                {
-                    question: "Encuentras un cable de un taladro 'pelado', pero la herramienta funciona. ¿Qué haces?",
-                    options: [
-                        "La uso rápido, con cuidado de no tocar el cable.",
-                        "Le pongo cinta aislante y sigo trabajando.",
-                        "La desconecto, la marco como 'PELIGROSA' y la reporto.",
-                        "La uso solo en lugares secos."
-                    ],
-                    answer: "La desconecto, la marco como 'PELIGROSA' y la reporto."
-                },
-                // Preguntas Adicionales
-                {
-                    question: "¿En qué condición NO debes usar una herramienta eléctrica?",
-                    options: [
-                        "Con gafas de seguridad.",
-                        "Con guantes de carnaza.",
-                        "Con el piso húmedo o con charcos.",
-                        "En un banco de trabajo limpio."
-                    ],
-                    answer: "Con el piso húmedo o con charcos."
-                },
-                {
-                    question: "El riesgo de 'atrapamiento' por anillos o pulseras es mayor con:",
-                    options: [
-                        "Herramientas sin batería.",
-                        "Maquinaria rotativa (taladros, esmeriles).",
-                        "Herramientas manuales (martillos).",
-                        "Cremas hidratantes."
-                    ],
-                    answer: "Maquinaria rotativa (taladros, esmeriles)."
-                },
-                {
-                    question: "La inspección 'pre-uso' de una herramienta es responsabilidad de:",
-                    options: [
-                        "El supervisor únicamente.",
-                        "El personal de mantenimiento.",
-                        "El compañero de al lado.",
-                        "El operador que va a usar la herramienta."
-                    ],
-                    answer: "El operador que va a usar la herramienta."
-                },
-                {
-                    question: "Usar un destornillador como cincel o palanca es un...",
-                    options: [
-                        "Uso correcto.",
-                        "Acto inseguro que puede dañar la herramienta y causar un accidente.",
-                        "Procedimiento estándar.",
-                        "Acto seguro si se usan gafas."
-                    ],
-                    answer: "Acto inseguro que puede dañar la herramienta y causar un accidente."
-                }
+                { question: "¿Por qué es importante usar crema hidratante en las manos?", options: ["Para que huelan bien.", "Para evitar que la piel se agriete y se abra a infecciones.", "Para limpiar la grasa.", "Para que los guantes resbalen mejor."], answer: "Para evitar que la piel se agriete y se abra a infecciones." },
+                { question: "¿Cuál es el tiempo mínimo recomendado para frotarse las manos al lavarlas?", options: ["5 segundos", "10 segundos", "20 segundos", "1 minuto"], answer: "20 segundos" },
+                { question: "Si encuentras un destornillador con el mango astillado, ¿qué debes hacer?", options: ["Usarlo con cuidado.", "Envolverlo con cinta aislante.", "Informar y retirarlo del servicio.", "Usarlo solo para trabajos ligeros."], answer: "Informar y retirarlo del servicio." },
+                { question: "Al usar una llave de ajuste (inglesa), ¿cuál es la forma más segura de aplicar fuerza?", options: ["Empujando la llave.", "Tirando de la llave hacia ti.", "Golpeándola con un martillo.", "Poniéndole un tubo para hacer más palanca."], answer: "Tirando de la llave hacia ti." },
+                { question: "¿Qué NUNCA debes hacer con una herramienta eléctrica como un esmeril?", options: ["Usarla con guantes.", "Quitarle la guarda de seguridad.", "Desconectarla para cambiar el disco.", "Revisar el cable antes de usar."], answer: "Quitarle la guarda de seguridad." },
+                { question: "Encuentras un cable de un taladro 'pelado', pero la herramienta funciona. ¿Qué haces?", options: ["La uso rápido, con cuidado de no tocar el cable.", "Le pongo cinta aislante y sigo trabajando.", "La desconecto, la marco como 'PELIGROSA' y la reporto.", "La uso solo en lugares secos."], answer: "La desconecto, la marco como 'PELIGROSA' y la reporto." },
+                { question: "¿En qué condición NO debes usar una herramienta eléctrica?", options: ["Con gafas de seguridad.", "Con guantes de carnaza.", "Con el piso húmedo o con charcos.", "En un banco de trabajo limpio."], answer: "Con el piso húmedo o con charcos." },
+                { question: "El riesgo de 'atrapamiento' por anillos o pulseras es mayor con:", options: ["Herramientas sin batería.", "Maquinaria rotativa (taladros, esmeriles).", "Herramientas manuales (martillos).", "Cremas hidratantes."], answer: "Maquinaria rotativa (taladros, esmeriles)." },
+                { question: "La inspección 'pre-uso' de una herramienta es responsabilidad de:", options: ["El supervisor únicamente.", "El personal de mantenimiento.", "El compañero de al lado.", "El operador que va a usar la herramienta."], answer: "El operador que va a usar la herramienta." },
+                { question: "Usar un destornillador como cincel o palanca es un...", options: ["Uso correcto.", "Acto inseguro que puede dañar la herramienta y causar un accidente.", "Procedimiento estándar.", "Acto seguro si se usan gafas."], answer: "Acto inseguro que puede dañar la herramienta y causar un accidente." }
             ];
 
             function buildQuiz() {
                 quizQuestions.forEach((item, index) => {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.classList.add('bg-gray-50', 'p-5', 'rounded-lg', 'border');
-                    
-                    const questionTitle = document.createElement('p');
-                    questionTitle.classList.add('font-semibold', 'text-gray-800', 'mb-3');
-                    questionTitle.textContent = `Pregunta ${index + 1}: ${item.question}`;
-                    questionDiv.appendChild(questionTitle);
-                    
-                    const optionsDiv = document.createElement('div');
-                    optionsDiv.classList.add('space-y-2');
+                    const qDiv = document.createElement('div');
+                    qDiv.classList.add('bg-gray-50', 'p-5', 'rounded-lg', 'border');
+                    qDiv.innerHTML = `<p class="font-semibold text-gray-800 mb-3">Pregunta ${index + 1}: ${item.question}</p>`;
+                    const optsDiv = document.createElement('div');
+                    optsDiv.classList.add('space-y-2');
                     
                     const shuffledOptions = [...item.options].sort(() => Math.random() - 0.5);
-
                     shuffledOptions.forEach(option => {
-                        const label = document.createElement('label');
-                        label.classList.add('flex', 'items-center', 'p-3', 'rounded', 'bg-white', 'border', 'hover:bg-gray-100', 'cursor-pointer');
-                        
-                        const input = document.createElement('input');
-                        input.type = 'radio';
-                        input.name = `question${index}`;
-                        input.value = option;
-                        input.classList.add('mr-3');
-                        
-                        label.appendChild(input);
-                        label.appendChild(document.createTextNode(option));
-                        optionsDiv.appendChild(label);
+                        optsDiv.innerHTML += `
+                            <label class="flex items-center p-3 rounded bg-white border hover:bg-gray-100 cursor-pointer">
+                                <input type="radio" name="question${index}" value="${option}" class="mr-3">
+                                ${option}
+                            </label>
+                        `;
                     });
-                    
-                    questionDiv.appendChild(optionsDiv);
-                    quizContainer.appendChild(questionDiv);
+                    qDiv.appendChild(optsDiv);
+                    quizContainer.appendChild(qDiv);
                 });
             }
 
             function showResults() {
                 let score = 0;
                 feedbackElement.innerHTML = '';
-                
                 quizQuestions.forEach((item, index) => {
                     const selected = document.querySelector(`input[name="question${index}"]:checked`);
                     const feedbackItem = document.createElement('div');
                     feedbackItem.classList.add('p-3', 'rounded');
-
                     if (selected) {
                         if (selected.value === item.answer) {
                             score++;
                             feedbackItem.classList.add('bg-green-100', 'border', 'border-green-200');
-                            feedbackItem.innerHTML = `<p class="font-semibold text-green-800">Pregunta ${index + 1}: ¡Correcto!</p><p class="text-sm text-gray-700">${item.question}</p>`;
+                            feedbackItem.innerHTML = `<p class="font-semibold text-green-800">Pregunta ${index + 1}: ¡Correcto!</p>`;
                         } else {
                             feedbackItem.classList.add('bg-red-100', 'border', 'border-red-200');
-                            feedbackItem.innerHTML = `<p class="font-semibold text-red-800">Pregunta ${index + 1}: Incorrecto.</p><p class="text-sm text-gray-700">Tu respuesta: "${selected.value}"</p><p class="text-sm text-gray-700">Respuesta correcta: "${item.answer}"</p>`;
+                            feedbackItem.innerHTML = `<p class="font-semibold text-red-800">Pregunta ${index + 1}: Incorrecto.</p><p class="text-sm text-gray-700">Respuesta correcta: "${item.answer}"</p>`;
                         }
                     } else {
                         feedbackItem.classList.add('bg-yellow-100', 'border', 'border-yellow-200');
@@ -528,7 +495,6 @@
                     }
                     feedbackElement.appendChild(feedbackItem);
                 });
-
                 scoreElement.textContent = `Obtuviste ${score} de ${quizQuestions.length} respuestas correctas.`;
                 resultsContainer.classList.remove('hidden');
                 submitButton.classList.add('hidden');
@@ -543,7 +509,6 @@
 
 </body>
 </html>
-
 
 
 
