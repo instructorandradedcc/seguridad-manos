@@ -35,26 +35,65 @@
         }
 
         /* --- ESTILOS DEL JUEGO --- */
-        .hotspot {
+        #game-area {
+            /* Necesario para que el canvas y los hotspots se superpongan correctamente */
+            position: relative; 
+            cursor: none; /* Ocultamos el cursor normal, la lupa será nuestro cursor */
+        }
+        
+        #game-canvas {
+            /* El lienzo para la LUPA y el DIBUJO. Se sitúa SOBRE la imagen y los hotspots */
             position: absolute;
-            width: 60px; /* Más grande */
-            height: 60px; /* Más grande */
-            border: 3px dashed #EF4444; /* red-500 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; /* Por encima de todo en el área de juego */
+        }
+
+        .hotspot {
+            /* Los hotspots están DETRÁS del canvas. Son invisibles hasta que se 'encuentran' */
+            position: absolute;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            cursor: pointer;
+            z-index: 5; /* Detrás del canvas, pero sobre la imagen */
+            opacity: 0; /* Invisibles por defecto */
+            pointer-events: none; /* No pueden ser clickeados directamente */
             transition: all 0.3s ease;
-            background-color: rgba(239, 68, 68, 0.15);
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
         }
-        .hotspot:hover {
-            background-color: rgba(239, 68, 68, 0.4);
-            transform: scale(1.1);
-        }
+        
         .hotspot.found {
+            /* Cuando se encuentran, se hacen visibles (detrás de la lupa/dibujo) */
+            opacity: 1;
             border: 4px solid #10B981; /* green-500 */
             background-color: rgba(16, 185, 129, 0.4);
-            backdrop-filter: blur(0);
+        }
+        
+        #floating-menu {
+            /* Menú de herramientas sobre el canvas */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 20; /* Encima de todo */
+            background: white;
+            border-radius: 8px;
+            padding: 4px;
+            display: flex;
+            gap: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tool-btn {
+            width: 32px;
+            height: 32px;
+            padding: 4px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .tool-btn.active-tool {
+            border-color: #3B82F6; /* blue-500 */
+            background-color: #DBEAFE; /* blue-100 */
         }
         
         .level-btn {
@@ -207,7 +246,7 @@
             <!-- PESTAÑA 5: MINIJUEGO "ENCUENTRA EL RIESGO" -->
             <div id="tab-content-5" class="tab-content">
                 <h2 class="text-2xl font-bold text-blue-700 mb-4">Pestaña 5: Minijuego - ¡Encuentra el Riesgo!</h2>
-                <p class="text-gray-700 mb-3">Encuentra los 5 riesgos de seguridad ocultos en la imagen.</p>
+                <p class="text-gray-700 mb-3">Usa la lupa para inspeccionar. Dibuja si es necesario. Haz clic en los 5 riesgos de seguridad.</p>
                 
                 <div class="bg-gray-100 p-4 rounded-lg">
                     <!-- Controles del Juego -->
@@ -225,11 +264,35 @@
                     </div>
 
                     <!-- ÁREA DE JUEGO -->
-                    <div id="game-area" class="relative w-full max-w-2xl mx-auto border-4 border-gray-300 rounded-lg overflow-hidden">
-                        <img id="game-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg" alt="Escena de un taller" class="w-full h-auto block">
+                    <div id="game-area" class="w-full max-w-2xl mx-auto border-4 border-gray-300 rounded-lg overflow-hidden">
                         
-                        <!-- Contenedor para los hotspots dinámicos -->
+                        <!-- Imagen de fondo -->
+                        <img id="game-image" src="" alt="Escena de un taller" class="w-full h-auto block">
+                        
+                        <!-- Contenedor para los hotspots (invisibles) -->
                         <div id="hotspot-container"></div>
+
+                        <!-- Canvas para Lupa y Dibujo (Encima de todo) -->
+                        <canvas id="game-canvas"></canvas>
+
+                        <!-- Menú de Herramientas Flotante -->
+                        <div id="floating-menu">
+                            <button class="tool-btn active-tool" id="tool-lupa" title="Lupa">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                            </button>
+                            <button class="tool-btn" id="tool-draw-red" title="Lápiz Rojo">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#EF4444" viewBox="0 0 24 24" stroke-width="1.5" stroke="#EF4444"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                            </button>
+                            <button class="tool-btn" id="tool-draw-blue" title="Lápiz Azul">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#3B82F6" viewBox="0 0 24 24" stroke-width="1.5" stroke="#3B82F6"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                            </button>
+                            <button class="tool-btn" id="tool-erase" title="Borrador">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" /></svg>
+                            </button>
+                            <button class="tool-btn" id="tool-clear" title="Limpiar todo">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.578 0c-.27.004-.537.01-.804.018c-3.3 0-6.04 2.64-6.04 5.85s2.739 5.85 6.04 5.85c.267 0 .534-.014.804-.018Z" /></svg>
+                            </button>
+                        </div>
                     </div>
                     <!-- FIN ÁREA DE JUEGO -->
 
@@ -284,7 +347,7 @@
             });
 
 
-            // --- LÓGICA DEL MINIJUEGO DE 10 NIVELES ---
+            // --- LÓGICA DEL MINIJUEGO DE 10 NIVELES (CON LUPA Y DIBUJO) ---
 
             const hotspotContainer = document.getElementById('hotspot-container');
             const counterElement = document.getElementById('hotspot-counter');
@@ -294,30 +357,40 @@
             const levelSelectorElement = document.getElementById('level-selector');
             const nextLevelBtn = document.getElementById('next-level-btn');
             const gameImage = document.getElementById('game-image');
+            const gameCanvas = document.getElementById('game-canvas');
+            const ctx = gameCanvas.getContext('2d');
+            
+            const toolButtons = document.querySelectorAll('.tool-btn');
+            const toolClear = document.getElementById('tool-clear');
 
-            let currentLevel = 0; // Índice del nivel
+            let currentLevel = 0;
             let foundCount = 0;
             let hotspotsFound = new Set();
             const RISKS_PER_LEVEL = 5;
+            
+            let currentTool = 'lupa'; // 'lupa', 'draw-red', 'draw-blue', 'erase'
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
 
             // --- BASE DE DATOS DE NIVELES ---
-            // Aquí puedes cambiar las URLs de las imágenes y las coordenadas de los riesgos.
-            // 'w' y 'h' son opcionales, por defecto son 60x60.
+            // ¡URLs de GitHub Corregidas!
+            // He mantenido las mismas posiciones de riesgo, pero puedes ajustarlas.
             const gameLevels = [
                 {
                     level: 1,
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel1.png",
                     spots: [
-                        { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, // Zona de sierra de cinta
-                        { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, // Desorden en el suelo
-                        { id: 3, top: '60%', left: '70%' }, // Herramientas en el banco
-                        { id: 4, top: '25%', left: '15%' }, // Estantería alta
-                        { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } // Cable en el suelo
+                        { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' },
+                        { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' },
+                        { id: 3, top: '60%', left: '70%' },
+                        { id: 4, top: '25%', left: '15%' },
+                        { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' }
                     ]
                 },
                 {
                     level: 2,
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel2.png",
                     spots: [
                         { id: 1, top: '10%', left: '10%' },
                         { id: 2, top: '30%', left: '30%' },
@@ -328,7 +401,7 @@
                 },
                 {
                     level: 3,
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel3.png",
                     spots: [
                         { id: 1, top: '15%', left: '80%' },
                         { id: 2, top: '25%', left: '60%' },
@@ -337,17 +410,49 @@
                         { id: 5, top: '55%', left: '10%' }
                     ]
                 },
-                // Añadí 7 niveles más con posiciones aleatorias (usando la misma imagen)
-                ...Array.from({ length: 7 }, (v, i) => ({
-                    level: i + 4,
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg/800px-Workshop_at_Shipwreck_Preservation_Trust%2C_Poole_Museum_-_geograph.org.uk_-_1245642.jpg",
-                    spots: Array.from({ length: 5 }, (v, j) => ({
-                        id: j + 1,
-                        top: `${Math.floor(Math.random() * 80) + 10}%`,
-                        left: `${Math.floor(Math.random() * 80) + 10}%`
-                    }))
-                }))
+                {
+                    level: 4,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel4.png",
+                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                },
+                {
+                    level: 5,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel5.png",
+                    spots: [ { id: 1, top: '10%', left: '10%' }, { id: 2, top: '30%', left: '30%' }, { id: 3, top: '50%', left: '50%' }, { id: 4, top: '70%', left: '70%' }, { id: 5, top: '90%', left: '90%' } ]
+                },
+                {
+                    level: 6,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel6.png",
+                    spots: [ { id: 1, top: '15%', left: '80%' }, { id: 2, top: '25%', left: '60%' }, { id: 3, top: '35%', left: '40%' }, { id: 4, top: '45%', left: '20%' }, { id: 5, top: '55%', left: '10%' } ]
+                },
+                {
+                    level: 7,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel7.png",
+                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                },
+                {
+                    level: 8,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel8.png",
+                    spots: [ { id: 1, top: '10%', left: '10%' }, { id: 2, top: '30%', left: '30%' }, { id: 3, top: '50%', left: '50%' }, { id: 4, top: '70%', left: '70%' }, { id: 5, top: '90%', left: '90%' } ]
+                },
+                {
+                    level: 9,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel9.png",
+                    spots: [ { id: 1, top: '15%', left: '80%' }, { id: 2, top: '25%', left: '60%' }, { id: 3, top: '35%', left: '40%' }, { id: 4, top: '45%', left: '20%' }, { id: 5, top: '55%', left: '10%' } ]
+                },
+                {
+                    level: 10,
+                    image: "https://raw.githubusercontent.com/instructorandradedcc/seguridad-manos/main/imagenes-juego/nivel10.png",
+                    spots: [ { id: 1, top: '40%', left: '15%', w: '80px', h: '80px' }, { id: 2, top: '75%', left: '20%', w: '100px', h: '50px' }, { id: 3, top: '60%', left: '70%' }, { id: 4, top: '25%', left: '15%' }, { id: 5, top: '80%', left: '55%', w: '70px', h: '70px' } ]
+                }
             ];
+
+            function resizeCanvas() {
+                // Ajusta el canvas al tamaño de la imagen mostrada
+                gameCanvas.width = gameImage.clientWidth;
+                gameCanvas.height = gameImage.clientHeight;
+                // Al redimensionar, el lienzo se borra, así que no necesitamos ctx.clearRect() aquí.
+            }
 
             function loadLevel(levelIndex) {
                 currentLevel = levelIndex;
@@ -357,25 +462,170 @@
                 successElement.classList.add('hidden');
                 
                 const levelData = gameLevels[levelIndex];
-                gameImage.src = levelData.image; // Cargar la imagen del nivel
+                
+                // Cargar la imagen del nivel
+                gameImage.src = levelData.image; 
+                
+                // IMPORTANTE: Redimensionar el canvas DESPUÉS de que la imagen cargue
+                gameImage.onload = () => {
+                    resizeCanvas();
+                };
+
                 levelTitleElement.textContent = `Nivel ${levelData.level}`;
                 
-                // Crear hotspots
+                // Crear hotspots (invisibles)
                 levelData.spots.forEach(spot => {
                     const spotEl = document.createElement('div');
                     spotEl.classList.add('hotspot');
                     spotEl.dataset.id = spot.id;
                     spotEl.style.top = spot.top;
                     spotEl.style.left = spot.left;
-                    if (spot.w) spotEl.style.width = spot.w;
-                    if (spot.h) spotEl.style.height = spot.h;
+                    spotEl.style.width = spot.w || '60px';
+                    spotEl.style.height = spot.h || '60px';
                     hotspotContainer.appendChild(spotEl);
                 });
 
                 updateCounter();
                 updateLevelButtons();
             }
+            
+            // --- Lógica de Herramientas (Lupa, Dibujo, Borrado) ---
+            
+            toolButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.id === 'tool-clear') {
+                        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                        return;
+                    }
+                    
+                    toolButtons.forEach(b => b.classList.remove('active-tool'));
+                    btn.classList.add('active-tool');
+                    currentTool = btn.id.replace('tool-', '');
+                });
+            });
 
+            function getMousePos(e) {
+                const rect = gameCanvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            gameCanvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const pos = getMousePos(e);
+                [lastX, lastY] = [pos.x, pos.y];
+            });
+
+            gameCanvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+                ctx.beginPath(); // Finaliza la línea de dibujo
+            });
+
+            gameCanvas.addEventListener('mouseleave', () => {
+                isDrawing = false;
+                ctx.beginPath();
+                // Limpia la lupa si el ratón sale
+                if (currentTool === 'lupa') {
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                }
+            });
+
+            gameCanvas.addEventListener('mousemove', (e) => {
+                const pos = getMousePos(e);
+                
+                if (currentTool === 'lupa') {
+                    drawLupa(pos.x, pos.y);
+                } else if (isDrawing) {
+                    drawOnCanvas(pos.x, pos.y);
+                }
+            });
+
+            function drawLupa(x, y) {
+                const radius = 60;
+                const zoom = 2;
+                
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia canvas
+                ctx.save();
+                
+                // 1. Dibuja el círculo de la lupa
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                ctx.clip(); // Recorta el área a ese círculo
+                
+                // 2. Dibuja la imagen ampliada dentro del círculo
+                ctx.drawImage(
+                    gameImage,
+                    x - radius / zoom, // coord. X de la imagen original
+                    y - radius / zoom, // coord. Y de la imagen original
+                    radius * 2 / zoom, // ancho de la fuente
+                    radius * 2 / zoom, // alto de la fuente
+                    x - radius,        // coord. X en el canvas
+                    y - radius,        // coord. Y en el canvas
+                    radius * 2,        // ancho en el canvas
+                    radius * 2         // alto en el canvas
+                );
+                
+                ctx.restore(); // Quita el recorte
+            }
+
+            function drawOnCanvas(x, y) {
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                
+                if (currentTool === 'draw-red') {
+                    ctx.strokeStyle = '#EF4444';
+                    ctx.lineWidth = 4;
+                    ctx.globalCompositeOperation = 'source-over';
+                } else if (currentTool === 'draw-blue') {
+                    ctx.strokeStyle = '#3B82F6';
+                    ctx.lineWidth = 4;
+                    ctx.globalCompositeOperation = 'source-over';
+                } else if (currentTool === 'erase') {
+                    ctx.lineWidth = 20;
+                    ctx.globalCompositeOperation = 'destination-out'; // Efecto borrador
+                }
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                [lastX, lastY] = [x, y];
+            }
+
+
+            // --- Lógica de Clic para Hotspots (A través del Canvas) ---
+            gameCanvas.addEventListener('click', (e) => {
+                const pos = getMousePos(e);
+                
+                // Busca qué hotspot (div invisible) fue clickeado
+                const hotspotsInLevel = hotspotContainer.querySelectorAll('.hotspot');
+                hotspotsInLevel.forEach(spot => {
+                    const spotRect = spot.getBoundingClientRect();
+                    const canvasRect = gameCanvas.getBoundingClientRect();
+                    
+                    // Convierte las coordenadas del div a coordenadas del canvas
+                    const spotLeft = spotRect.left - canvasRect.left;
+                    const spotTop = spotRect.top - canvasRect.top;
+                    const spotRight = spotLeft + spotRect.width;
+                    const spotBottom = spotTop + spotRect.height;
+
+                    // Comprueba si el clic (pos.x, pos.y) está dentro del hotspot
+                    if (pos.x >= spotLeft && pos.x <= spotRight && pos.y >= spotTop && pos.y <= spotBottom) {
+                        const spotId = spot.dataset.id;
+                        if (!hotspotsFound.has(spotId)) {
+                            spot.classList.add('found'); // Muestra el div verde detrás del canvas
+                            hotspotsFound.add(spotId);
+                            foundCount++;
+                            updateCounter();
+                        }
+                    }
+                });
+            });
+
+            // --- Funciones de Control del Juego ---
             function updateCounter() {
                 counterElement.textContent = foundCount;
                 if (foundCount === RISKS_PER_LEVEL) {
@@ -383,7 +633,7 @@
                     if (currentLevel < gameLevels.length - 1) {
                         nextLevelBtn.classList.remove('hidden');
                     } else {
-                        nextLevelBtn.classList.add('hidden'); // No hay más niveles
+                        nextLevelBtn.classList.add('hidden');
                     }
                 }
             }
@@ -394,26 +644,14 @@
                 });
             }
 
-            // Manejador de clics en hotspots (usando delegación)
-            hotspotContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('hotspot')) {
-                    const spot = e.target;
-                    const spotId = spot.dataset.id;
-                    if (!hotspotsFound.has(spotId)) {
-                        spot.classList.add('found');
-                        hotspotsFound.add(spotId);
-                        foundCount++;
-                        updateCounter();
-                    }
-                }
+            resetElement.addEventListener('click', () => {
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
+                loadLevel(currentLevel);
             });
 
-            // Botón de Reiniciar
-            resetElement.addEventListener('click', () => loadLevel(currentLevel));
-
-            // Botón de Siguiente Nivel
             nextLevelBtn.addEventListener('click', () => {
                 if (currentLevel < gameLevels.length - 1) {
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
                     loadLevel(currentLevel + 1);
                 }
             });
@@ -423,12 +661,18 @@
                 const levelBtn = document.createElement('button');
                 levelBtn.classList.add('level-btn');
                 levelBtn.textContent = level.level;
-                levelBtn.addEventListener('click', () => loadLevel(index));
+                levelBtn.addEventListener('click', () => {
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // Limpia dibujos
+                    loadLevel(index);
+                });
                 levelSelectorElement.appendChild(levelBtn);
             });
 
             // Cargar Nivel 1 al inicio
             loadLevel(0);
+            
+            // Redimensionar el canvas si la ventana cambia de tamaño
+            new ResizeObserver(resizeCanvas).observe(gameImage);
 
 
             // --- LÓGICA DE LA EVALUACIÓN (QUIZ) ---
